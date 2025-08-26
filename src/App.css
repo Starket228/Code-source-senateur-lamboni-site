@@ -1,0 +1,566 @@
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Enhanced global styles */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-medium leading-tight;
+}
+
+h1 {
+  @apply text-4xl md:text-5xl mb-6;
+}
+
+h2 {
+  @apply text-3xl md:text-4xl mb-5;
+}
+
+h3 {
+  @apply text-2xl mb-4;
+}
+
+p {
+  @apply leading-relaxed text-gray-600;
+}
+
+.section-title-enhanced {
+  @apply relative font-bold text-3xl md:text-4xl mb-6 inline-block;
+}
+
+.section-title-enhanced::after {
+  @apply content-[''] absolute -bottom-3 left-0 right-0 w-24 h-1.5 bg-primary rounded-full mx-auto;
+}
+
+/* Button hover effect */
+.btn-shimmer {
+  @apply relative overflow-hidden;
+}
+
+.btn-shimmer::before {
+  @apply content-[''] absolute top-0 left-0 w-full h-full bg-white/20 -translate-x-full skew-x-30;
+  transition: transform 0.6s ease;
+}
+
+.btn-shimmer:hover::before {
+  @apply translate-x-full;
+}
+
+/* Enhanced card styles */
+.enhanced-card {
+  @apply bg-white rounded-xl shadow-soft transition-all duration-500 hover:-translate-y-2 hover:shadow-medium border border-gray-100/30 overflow-hidden;
+}
+
+/* Page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Gradient text effect */
+.gradient-text {
+  @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+}
+
+/* Image hover effects */
+.image-zoom-container {
+  @apply overflow-hidden rounded-xl;
+}
+
+.image-zoom {
+  @apply transition-transform duration-700 hover:scale-110;
+}
+
+/* Button with animated border */
+.btn-animated-border {
+  @apply relative overflow-hidden;
+}
+
+.btn-animated-border::before {
+  @apply content-[''] absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+}
+
+.btn-animated-border:hover::before {
+  @apply w-full;
+}
+
+/* Section dividers */
+.section-divider {
+  @apply w-full h-12 overflow-hidden relative;
+  background: linear-gradient(135deg, transparent 25%, #f9fafb 25%, #f9fafb 50%, transparent 50%, transparent 75%, #f9fafb 75%);
+  background-size: 20px 20px;
+}
+
+/* Background with subtle pattern */
+.subtle-pattern {
+  background-color: #f8f8f8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%233b82f6' fill-opacity='0.05' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Text effects */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Grid pattern background */
+.grid-pattern {
+  background-image: 
+    linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* 3D button effect */
+.btn-3d {
+  @apply relative shadow-none bg-primary text-white rounded-lg font-medium transition-all;
+  transform: translateY(0);
+  box-shadow: 0 4px 0 0 rgba(30, 64, 175, 0.8);
+}
+
+.btn-3d:hover {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 0 rgba(30, 64, 175, 0.8);
+}
+
+.btn-3d:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 0 rgba(30, 64, 175, 0.8);
+}
+
+/* Testimonial card */
+.testimonial-card {
+  @apply bg-white p-6 rounded-xl shadow-soft border border-gray-100 relative;
+}
+
+.testimonial-card::before {
+  content: "";
+  @apply absolute text-8xl text-primary/10 -top-2 -left-2 font-serif;
+}
+
+/* Togolese flag stripe animation */
+.togo-flag-stripe {
+  height: 6px;
+  background: linear-gradient(90deg, 
+    #008000 0%, 
+    #008000 32%, 
+    #ffce00 32%, 
+    #ffce00 66%, 
+    #d21034 66%, 
+    #d21034 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.togo-flag-stripe::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    rgba(255, 255, 255, 0) 100%);
+  animation: flag-shimmer 3s infinite;
+}
+
+@keyframes flag-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+/* Enhanced highlight effects */
+.glow-on-hover {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.glow-on-hover::before {
+  content: '';
+  background: linear-gradient(45deg, 
+    #ff0000, #ff7300, #fffb00, #48ff00, 
+    #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing 20s linear infinite;
+  opacity: 0;
+  transition: opacity .3s ease-in-out;
+  border-radius: inherit;
+}
+
+.glow-on-hover:hover::before {
+  opacity: 1;
+}
+
+.glow-on-hover::after {
+  z-index: -1;
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+  left: 0;
+  top: 0;
+  border-radius: inherit;
+}
+
+@keyframes glowing {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
+
+/* Gradient animated text effect */
+.gradient-animate {
+  background: linear-gradient(90deg, #3B82F6, #d21034, #ffce00, #3B82F6);
+  background-size: 300% 300%;
+  animation: gradient-text 8s ease infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes gradient-text {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Card border sheen effect */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, 
+    rgba(255,255,255,0) 0%, 
+    rgba(255,255,255,0.3) 50%, 
+    rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg);
+  transition: all 0.75s;
+}
+
+.card-shine:hover::before {
+  animation: shine 1.5s;
+}
+
+@keyframes shine {
+  100% {
+    left: 150%;
+  }
+}
+
+/* Floating animation */
+.floating {
+  animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Spotlight hover effect */
+.spotlight-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+                              rgba(255, 255, 255, 0.2) 0%, 
+                              rgba(255, 255, 255, 0) 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.spotlight-effect:hover::before {
+  opacity: 1;
+}
+
+/* Improved flag stripe animation */
+.togo-flag-shine-stripe {
+  height: 6px;
+  background: linear-gradient(90deg, 
+    #008000 0%, 
+    #008000 32%, 
+    #ffce00 32%, 
+    #ffce00 66%, 
+    #d21034 66%, 
+    #d21034 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.togo-flag-shine-stripe::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.4) 50%, 
+    rgba(255, 255, 255, 0) 100%);
+  animation: flag-shine 3s infinite;
+}
+
+@keyframes flag-shine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+/* Highlight text with underline hover effect */
+.highlight-hover {
+  position: relative;
+  display: inline-block;
+}
+
+.highlight-hover::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background: linear-gradient(90deg, #3B82F6, #d21034);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.highlight-hover:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Glass card with hover effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(31, 38, 135, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Enhanced text shadow */
+.shadow-text {
+  text-shadow: 
+    0 2px 10px rgba(0, 0, 0, 0.5),
+    0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Radial gradient for vignette effect */
+.bg-radial-gradient {
+  background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+}
+
+/* Enhanced Togolese flag stripe animation */
+.togo-flag-shine-stripe {
+  height: 8px;
+  background: linear-gradient(90deg, 
+    #008000 0%, 
+    #008000 32%, 
+    #ffce00 32%, 
+    #ffce00 66%, 
+    #d21034 66%, 
+    #d21034 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.togo-flag-shine-stripe::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.6) 50%, 
+    rgba(255, 255, 255, 0) 100%);
+  animation: flag-shine 2.5s infinite;
+}
+
+@keyframes flag-shine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+/* Loading progress animation */
+.loading-progress {
+  width: 70%;
+  background-size: 200% 200%;
+  animation: shimmer 2s linear infinite, loading 3s ease-in-out infinite alternate;
+}
+
+@keyframes loading {
+  0% { width: 15%; }
+  50% { width: 85%; }
+  100% { width: 65%; }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Enhanced glass card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  transform: translateY(-2px);
+}
+
+/* Enhanced button styles */
+.btn {
+  @apply inline-flex items-center justify-center px-6 py-3 text-white bg-primary rounded-lg font-medium transition-all duration-300 hover:bg-primary-hover hover:translate-y-[-2px] shadow-md hover:shadow-lg relative overflow-hidden;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(255,255,255,0.1) 0%, transparent 50%);
+  z-index: -1;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, transparent 50%);
+  z-index: -1;
+}
+
+/* Shine animation */
+@keyframes shine {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
