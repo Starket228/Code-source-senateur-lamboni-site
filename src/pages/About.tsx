@@ -248,27 +248,48 @@ const About = () => {
 
       {/* Notre Vision Section */}
       {vision && (
-        <section ref={el => sectionRefs.current[1] = el} className="py-16 relative transition-all duration-500">
-          <div className="container mx-auto px-4">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/5 to-teal-600/5 rounded-3xl"></div>
-              <div className="relative bg-white/60 backdrop-blur-sm rounded-3xl overflow-hidden border border-white/20 shadow-2xl p-10">
-                <div className="max-w-3xl mx-auto text-center">
-                  <div className="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center mb-6 mx-auto">
-                    <Eye size={32} className="text-emerald-600" />
-                  </div>
-                  <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-emerald-800 to-teal-800 bg-clip-text text-transparent mb-4">
-                    {vision.title}
-                  </h2>
-                  {vision.subtitle && (
-                    <p className="text-lg text-gray-500 mb-8 font-medium">{vision.subtitle}</p>
-                  )}
-                  <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-white/20 shadow-sm text-left">
-                    <p className="text-gray-700 leading-relaxed text-lg">
-                      {vision.content}
-                    </p>
-                  </div>
+        <section ref={el => sectionRefs.current[1] = el} className="py-20 relative transition-all duration-500 overflow-hidden">
+          {/* Background decoratif */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-teal-50/40 to-cyan-50/30"></div>
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-400"></div>
+          <div className="absolute top-10 left-10 w-64 h-64 bg-gradient-to-br from-emerald-400/10 to-teal-600/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-10 right-10 w-80 h-80 bg-gradient-to-br from-cyan-400/10 to-emerald-600/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="max-w-4xl mx-auto">
+              {/* Header centré */}
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-lg shadow-emerald-500/30 mb-6">
+                  <Eye size={36} className="text-white" />
                 </div>
+                <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-700 via-teal-700 to-cyan-700 bg-clip-text text-transparent mb-4">
+                  {vision.title}
+                </h2>
+                {vision.subtitle && (
+                  <p className="text-lg text-gray-500 font-medium max-w-xl mx-auto">{vision.subtitle}</p>
+                )}
+              </div>
+
+              {/* Contenu principal */}
+              <div className="relative">
+                {/* Guillemets décoratifs */}
+                <div className="absolute -top-4 -left-4 text-8xl text-emerald-200 font-serif leading-none select-none">"</div>
+                <div className="absolute -bottom-4 -right-4 text-8xl text-emerald-200 font-serif leading-none select-none rotate-180">"</div>
+
+                <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-10 shadow-xl border border-emerald-100/60">
+                  <p className="text-gray-700 leading-relaxed text-lg md:text-xl italic text-center">
+                    {vision.content}
+                  </p>
+                </div>
+              </div>
+
+              {/* Ligne décorative bas */}
+              <div className="flex items-center justify-center mt-8 gap-3">
+                <div className="h-px w-16 bg-gradient-to-r from-transparent to-emerald-400"></div>
+                <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                <div className="w-3 h-3 rounded-full bg-teal-500"></div>
+                <div className="w-2 h-2 rounded-full bg-cyan-500"></div>
+                <div className="h-px w-16 bg-gradient-to-l from-transparent to-cyan-400"></div>
               </div>
             </div>
           </div>
