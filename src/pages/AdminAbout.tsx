@@ -337,6 +337,59 @@ const AdminAbout = () => {
                   />
                 </div>
 
+
+                <div className="space-y-2">
+                  <Label htmlFor="biography_image">Image de la biographie</Label>
+                  {aboutData.biography_image && (
+                    <div className="mb-2">
+                      <img
+                        src={aboutData.biography_image}
+                        alt="Aperçu"
+                        className="h-32 w-32 object-cover rounded-lg border"
+                      />
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="biography_image"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const fileExt = file.name.split('.').pop();
+                        const filePath = `biography/about-${Date.now()}.${fileExt}`;
+                        const { error: uploadError } = await supabase.storage
+                          .from('images')
+                          .upload(filePath, file, { upsert: true });
+                        if (uploadError) {
+                          toast({ title: "Erreur", description: "Impossible d'uploader l'image", variant: "destructive" });
+                          return;
+                        }
+                        const { data: urlData } = supabase.storage.from('images').getPublicUrl(filePath);
+                        setAboutData({ ...aboutData, biography_image: urlData.publicUrl });
+                        toast({ title: "Succès", description: "Image uploadée, pensez à sauvegarder" });
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => document.getElementById('biography_image')?.click()}
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      Choisir une image
+                    </Button>
+                  </div>
+                  <p className="text-xs text-gray-500">Ou entrez une URL directement :</p>
+                  <Input
+                    placeholder="https://..."
+                    value={aboutData.biography_image}
+                    onChange={(e) => setAboutData({...aboutData, biography_image: e.target.value})}
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="election_date">Date d'élection</Label>
@@ -346,15 +399,8 @@ const AdminAbout = () => {
                       onChange={(e) => setAboutData({...aboutData, election_date: e.target.value})}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="biography_image">URL de l'image</Label>
-                    <Input
-                      id="biography_image"
-                      value={aboutData.biography_image}
-                      onChange={(e) => setAboutData({...aboutData, biography_image: e.target.value})}
-                    />
-                  </div>
                 </div>
+
 
                 <div className="space-y-2">
                   <Label htmlFor="election_description">Description de l'élection</Label>
@@ -599,10 +645,22 @@ const ValueDialog: React.FC<ValueDialogProps> = ({ value, onSave, iconOptions, c
     color: value?.color || colorOptions[0]
   });
 
+  // Sync form data when editing a different value
+  useEffect(() => {
+    setFormData({
+      title: value?.title || '',
+      description: value?.description || '',
+      icon: value?.icon || iconOptions[0],
+      color: value?.color || colorOptions[0]
+    });
+  }, [value]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
-    setFormData({ title: '', description: '', icon: iconOptions[0], color: colorOptions[0] });
+    if (!value) {
+      setFormData({ title: '', description: '', icon: iconOptions[0], color: colorOptions[0] });
+    }
   };
 
   return (
@@ -680,16 +738,23 @@ const AchievementDialog: React.FC<AchievementDialogProps> = ({ achievement, onSa
     color: achievement?.color || colorOptions[0]
   });
 
+  // Sync form data when editing a different achievement
+  useEffect(() => {
+    setFormData({
+      year: achievement?.year || '',
+      title: achievement?.title || '',
+      items: achievement?.items?.join('\n') || '',
+      color: achievement?.color || colorOptions[0]
+    });
+  }, [achievement]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const items = formData.items.split('\n').filter(item => item.trim() !== '');
-    onSave({
-      year: formData.year,
-      title: formData.title,
-      items,
-      color: formData.color
-    });
-    setFormData({ year: '', title: '', items: '', color: colorOptions[0] });
+    onSave({ year: formData.year, title: formData.title, items, color: formData.color });
+    if (!achievement) {
+      setFormData({ year: '', title: '', items: '', color: colorOptions[0] });
+    }
   };
 
   return (
