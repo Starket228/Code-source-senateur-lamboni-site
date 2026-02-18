@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
-import { Trash2, Edit, Plus, Save, Upload, User, Star, Trophy, Heart, Shield, Lightbulb } from 'lucide-react';
+import { Trash2, Edit, Plus, Save, Upload, User, Star, Trophy, Heart, Shield, Lightbulb, Eye } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -45,10 +45,19 @@ interface AboutAchievement {
   color: string;
 }
 
+interface AboutVision {
+  id: string;
+  title: string;
+  subtitle: string;
+  content: string;
+  icon: string;
+}
+
 const AdminAbout = () => {
   const [aboutData, setAboutData] = useState<AboutPage | null>(null);
   const [values, setValues] = useState<AboutValue[]>([]);
   const [achievements, setAchievements] = useState<AboutAchievement[]>([]);
+  const [vision, setVision] = useState<AboutVision | null>(null);
   const [loading, setLoading] = useState(true);
   const [editingValue, setEditingValue] = useState<AboutValue | null>(null);
   const [editingAchievement, setEditingAchievement] = useState<AboutAchievement | null>(null);
@@ -90,6 +99,13 @@ const AdminAbout = () => {
 
       if (achievementsError) throw achievementsError;
       setAchievements(achievementsData || []);
+
+      // Fetch vision
+      const { data: visionData } = await supabase
+        .from('about_vision')
+        .select('*')
+        .single();
+      if (visionData) setVision(visionData);
 
     } catch (error: any) {
       console.error('Error fetching data:', error);
@@ -263,8 +279,9 @@ const AdminAbout = () => {
       </div>
 
       <Tabs defaultValue="content" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="content">Contenu principal</TabsTrigger>
+          <TabsTrigger value="vision">Notre Vision</TabsTrigger>
           <TabsTrigger value="values">Valeurs</TabsTrigger>
           <TabsTrigger value="achievements">Réalisations</TabsTrigger>
         </TabsList>
@@ -372,6 +389,64 @@ const AdminAbout = () => {
                 <Button onClick={handleSaveAboutPage} className="w-full">
                   <Save className="w-4 h-4 mr-2" />
                   Sauvegarder les modifications
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="vision" className="space-y-6">
+          {vision && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Eye className="w-5 h-5" />
+                  Notre Vision
+                </CardTitle>
+                <CardDescription>Modifiez la section "Notre Vision" affichée après la biographie</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="vision_title">Titre</Label>
+                  <Input
+                    id="vision_title"
+                    value={vision.title}
+                    onChange={(e) => setVision({...vision, title: e.target.value})}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="vision_subtitle">Sous-titre</Label>
+                  <Input
+                    id="vision_subtitle"
+                    value={vision.subtitle}
+                    onChange={(e) => setVision({...vision, subtitle: e.target.value})}
+                    placeholder="Ex : Une vision pour le Togo de demain"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="vision_content">Contenu de la vision</Label>
+                  <Textarea
+                    id="vision_content"
+                    rows={6}
+                    value={vision.content}
+                    onChange={(e) => setVision({...vision, content: e.target.value})}
+                    placeholder="Décrivez la vision du sénateur..."
+                  />
+                </div>
+                <Button onClick={async () => {
+                  try {
+                    const { error } = await supabase
+                      .from('about_vision')
+                      .update({ title: vision.title, subtitle: vision.subtitle, content: vision.content })
+                      .eq('id', vision.id);
+                    if (error) throw error;
+                    toast({ title: "Succès", description: "Vision mise à jour" });
+                  } catch (err: any) {
+                    toast({ title: "Erreur", description: "Impossible de mettre à jour la vision", variant: "destructive" });
+                  }
+                }} className="w-full">
+                  <Save className="w-4 h-4 mr-2" />
+                  Sauvegarder la vision
                 </Button>
               </CardContent>
             </Card>

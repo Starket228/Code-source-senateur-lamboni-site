@@ -23,6 +23,14 @@ interface AboutPageData {
   election_description: string;
 }
 
+interface AboutVision {
+  id: string;
+  title: string;
+  subtitle: string;
+  content: string;
+  icon: string;
+}
+
 interface AboutValue {
   id: string;
   title: string;
@@ -45,6 +53,7 @@ const About = () => {
   const [aboutData, setAboutData] = useState<AboutPageData | null>(null);
   const [values, setValues] = useState<AboutValue[]>([]);
   const [achievements, setAchievements] = useState<AboutAchievement[]>([]);
+  const [vision, setVision] = useState<AboutVision | null>(null);
   const [loading, setLoading] = useState(true);
 
   // References for scroll animations
@@ -82,6 +91,14 @@ const About = () => {
 
       if (achievementsError) throw achievementsError;
       setAchievements(achievementsData || []);
+
+      // Fetch vision
+      const { data: visionData, error: visionError } = await supabase
+        .from('about_vision')
+        .select('*')
+        .single();
+
+      if (!visionError) setVision(visionData);
 
     } catch (error: any) {
       console.error('Error fetching about data:', error);
@@ -229,8 +246,37 @@ const About = () => {
         </div>
       </section>
 
+      {/* Notre Vision Section */}
+      {vision && (
+        <section ref={el => sectionRefs.current[1] = el} className="py-16 relative transition-all duration-500">
+          <div className="container mx-auto px-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/5 to-teal-600/5 rounded-3xl"></div>
+              <div className="relative bg-white/60 backdrop-blur-sm rounded-3xl overflow-hidden border border-white/20 shadow-2xl p-10">
+                <div className="max-w-3xl mx-auto text-center">
+                  <div className="w-16 h-16 bg-emerald-50 rounded-xl flex items-center justify-center mb-6 mx-auto">
+                    <Eye size={32} className="text-emerald-600" />
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-emerald-800 to-teal-800 bg-clip-text text-transparent mb-4">
+                    {vision.title}
+                  </h2>
+                  {vision.subtitle && (
+                    <p className="text-lg text-gray-500 mb-8 font-medium">{vision.subtitle}</p>
+                  )}
+                  <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-white/20 shadow-sm text-left">
+                    <p className="text-gray-700 leading-relaxed text-lg">
+                      {vision.content}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Modern Values Section */}
-      <section ref={el => sectionRefs.current[1] = el} className="py-16 bg-gradient-to-br from-white to-gray-50 relative transition-all duration-500">
+      <section ref={el => sectionRefs.current[2] = el} className="py-16 bg-gradient-to-br from-white to-gray-50 relative transition-all duration-500">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
@@ -321,7 +367,7 @@ const About = () => {
       </section>
 
       {/* Modern Accomplishments Section */}
-      <section ref={el => sectionRefs.current[2] = el} className="py-16 relative transition-all duration-500">
+      <section ref={el => sectionRefs.current[3] = el} className="py-16 relative transition-all duration-500">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             
