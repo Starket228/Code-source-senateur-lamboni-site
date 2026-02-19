@@ -3,7 +3,7 @@ import Layout from '@/components/Layout';
 import { useSite } from '@/context/SiteContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
-import { User, BookOpen, Award, Users, Star, Heart, Shield, TrendingUp, Eye, Calendar, MapPin } from 'lucide-react';
+import { User, BookOpen, Award, Users, Star, Heart, Shield, TrendingUp, Eye, Calendar, MapPin, Briefcase, Sprout, GraduationCap, HeartPulse, Building2, Globe, Scale, Zap, Target, Handshake } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 interface AboutPageData {
@@ -47,6 +47,15 @@ interface AboutAchievement {
   color: string;
 }
 
+interface AboutDomain {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+  order_index: number;
+}
+
 const About = () => {
   const { settings } = useSite();
   const { t } = useLanguage();
@@ -54,6 +63,7 @@ const About = () => {
   const [values, setValues] = useState<AboutValue[]>([]);
   const [achievements, setAchievements] = useState<AboutAchievement[]>([]);
   const [vision, setVision] = useState<AboutVision | null>(null);
+  const [domains, setDomains] = useState<AboutDomain[]>([]);
   const [loading, setLoading] = useState(true);
 
   // References for scroll animations
@@ -100,6 +110,14 @@ const About = () => {
 
       if (!visionError) setVision(visionData);
 
+      // Fetch domains
+      const { data: domainsData } = await supabase
+        .from('about_domains')
+        .select('*')
+        .order('order_index', { ascending: true });
+
+      setDomains(domainsData || []);
+
     } catch (error: any) {
       console.error('Error fetching about data:', error);
     } finally {
@@ -109,13 +127,11 @@ const About = () => {
 
   const getIcon = (iconName: string) => {
     const iconMap: { [key: string]: React.ComponentType<any> } = {
-      Shield,
-      Heart,
-      Star,
-      Award,
-      User
+      Shield, Heart, Star, Award, User,
+      Briefcase, Sprout, GraduationCap, HeartPulse, Building2, Globe, Scale,
+      TrendingUp, Zap, Target, Handshake, BookOpen, Users, Eye,
     };
-    return iconMap[iconName] || Shield;
+    return iconMap[iconName] || Briefcase;
   };
 
   // Set up intersection observer for scroll animations
@@ -480,6 +496,67 @@ const About = () => {
           </div>
         </div>
       </section>
+
+      {/* Domaines d'intervention Section */}
+      {domains.length > 0 && (
+        <section ref={el => sectionRefs.current[4] = el} className="py-20 relative transition-all duration-500 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950"></div>
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-400"></div>
+          <div className="absolute top-10 right-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-10 left-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="text-center mb-14">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/30 mb-6">
+                <Briefcase size={30} className="text-white" />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                Nos Domaines d'Intervention
+              </h2>
+              <p className="text-blue-200/80 text-lg max-w-2xl mx-auto">
+                Les axes prioritaires d'engagement au service des citoyens
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {domains.map((domain, index) => {
+                const IconComponent = getIcon(domain.icon);
+                const colorStyleMap: { [key: string]: { border: string; icon: string; badge: string } } = {
+                  blue:   { border: 'border-blue-500/30 hover:border-blue-400/60',   icon: 'from-blue-500 to-blue-700',    badge: 'bg-blue-500/20 text-blue-200' },
+                  green:  { border: 'border-emerald-500/30 hover:border-emerald-400/60', icon: 'from-emerald-500 to-green-700', badge: 'bg-emerald-500/20 text-emerald-200' },
+                  purple: { border: 'border-purple-500/30 hover:border-purple-400/60', icon: 'from-purple-500 to-indigo-700', badge: 'bg-purple-500/20 text-purple-200' },
+                  red:    { border: 'border-rose-500/30 hover:border-rose-400/60',    icon: 'from-rose-500 to-red-700',     badge: 'bg-rose-500/20 text-rose-200' },
+                  orange: { border: 'border-orange-500/30 hover:border-orange-400/60', icon: 'from-orange-500 to-amber-700', badge: 'bg-orange-500/20 text-orange-200' },
+                  indigo: { border: 'border-indigo-500/30 hover:border-indigo-400/60', icon: 'from-indigo-500 to-blue-800', badge: 'bg-indigo-500/20 text-indigo-200' },
+                  yellow: { border: 'border-yellow-500/30 hover:border-yellow-400/60', icon: 'from-yellow-500 to-orange-600', badge: 'bg-yellow-500/20 text-yellow-200' },
+                  pink:   { border: 'border-pink-500/30 hover:border-pink-400/60',    icon: 'from-pink-500 to-rose-700',   badge: 'bg-pink-500/20 text-pink-200' },
+                };
+                const style = colorStyleMap[domain.color] || colorStyleMap.blue;
+
+                return (
+                  <div
+                    key={domain.id}
+                    className={`group relative bg-white/5 backdrop-blur-sm border ${style.border} rounded-2xl p-7 transition-all duration-400 hover:bg-white/10 hover:-translate-y-1 hover:shadow-2xl`}
+                  >
+                    <div className={`w-14 h-14 bg-gradient-to-br ${style.icon} rounded-xl flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <IconComponent size={26} className="text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-3 group-hover:text-blue-100 transition-colors">
+                      {domain.title}
+                    </h3>
+                    <p className="text-blue-200/70 text-sm leading-relaxed">
+                      {domain.description}
+                    </p>
+                    <div className={`absolute top-5 right-5 w-8 h-8 ${style.badge} rounded-full flex items-center justify-center text-xs font-bold`}>
+                      {index + 1}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Modern CTA Section */}
       <section className="py-20 relative overflow-hidden">

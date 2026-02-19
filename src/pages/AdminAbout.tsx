@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
-import { Trash2, Edit, Plus, Save, Upload, User, Star, Trophy, Heart, Shield, Lightbulb, Eye } from 'lucide-react';
+import { Trash2, Edit, Plus, Save, Upload, User, Star, Trophy, Heart, Shield, Lightbulb, Eye, Briefcase, ArrowUp, ArrowDown } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -53,16 +53,28 @@ interface AboutVision {
   icon: string;
 }
 
+interface AboutDomain {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+  order_index: number;
+}
+
 const AdminAbout = () => {
   const [aboutData, setAboutData] = useState<AboutPage | null>(null);
   const [values, setValues] = useState<AboutValue[]>([]);
   const [achievements, setAchievements] = useState<AboutAchievement[]>([]);
   const [vision, setVision] = useState<AboutVision | null>(null);
+  const [domains, setDomains] = useState<AboutDomain[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingValue, setEditingValue] = useState<AboutValue | null>(null);
   const [editingAchievement, setEditingAchievement] = useState<AboutAchievement | null>(null);
+  const [editingDomain, setEditingDomain] = useState<AboutDomain | null>(null);
   const [isValueDialogOpen, setIsValueDialogOpen] = useState(false);
   const [isAchievementDialogOpen, setIsAchievementDialogOpen] = useState(false);
+  const [isDomainDialogOpen, setIsDomainDialogOpen] = useState(false);
 
   const iconOptions = ['Shield', 'Heart', 'Star', 'Trophy', 'Lightbulb', 'User'];
   const colorOptions = ['blue', 'red', 'yellow', 'green', 'purple', 'orange', 'pink', 'indigo'];
@@ -106,6 +118,13 @@ const AdminAbout = () => {
         .select('*')
         .single();
       if (visionData) setVision(visionData);
+
+      // Fetch domains
+      const { data: domainsData } = await supabase
+        .from('about_domains')
+        .select('*')
+        .order('order_index', { ascending: true });
+      setDomains(domainsData || []);
 
     } catch (error: any) {
       console.error('Error fetching data:', error);
@@ -258,6 +277,40 @@ const AdminAbout = () => {
     }
   };
 
+  const handleSaveDomain = async (domain: Omit<AboutDomain, 'id' | 'created_at' | 'updated_at'>) => {
+    try {
+      if (editingDomain?.id) {
+        const { error } = await supabase
+          .from('about_domains')
+          .update(domain)
+          .eq('id', editingDomain.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('about_domains')
+          .insert([domain]);
+        if (error) throw error;
+      }
+      await fetchData();
+      setIsDomainDialogOpen(false);
+      setEditingDomain(null);
+      toast({ title: "Succès", description: editingDomain?.id ? "Domaine mis à jour" : "Domaine ajouté" });
+    } catch (error: any) {
+      toast({ title: "Erreur", description: "Impossible de sauvegarder le domaine", variant: "destructive" });
+    }
+  };
+
+  const handleDeleteDomain = async (id: string) => {
+    try {
+      const { error } = await supabase.from('about_domains').delete().eq('id', id);
+      if (error) throw error;
+      await fetchData();
+      toast({ title: "Succès", description: "Domaine supprimé" });
+    } catch (error: any) {
+      toast({ title: "Erreur", description: "Impossible de supprimer le domaine", variant: "destructive" });
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -279,9 +332,10 @@ const AdminAbout = () => {
       </div>
 
       <Tabs defaultValue="content" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="content">Contenu principal</TabsTrigger>
           <TabsTrigger value="vision">Notre Vision</TabsTrigger>
+          <TabsTrigger value="domains">Domaines</TabsTrigger>
           <TabsTrigger value="values">Valeurs</TabsTrigger>
           <TabsTrigger value="achievements">Réalisations</TabsTrigger>
         </TabsList>
@@ -497,6 +551,64 @@ const AdminAbout = () => {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        <TabsContent value="domains" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-semibold">Domaines d'intervention</h2>
+            <Dialog open={isDomainDialogOpen} onOpenChange={setIsDomainDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={() => { setEditingDomain(null); setIsDomainDialogOpen(true); }}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Ajouter un domaine
+                </Button>
+              </DialogTrigger>
+              <DomainDialog
+                domain={editingDomain}
+                onSave={handleSaveDomain}
+                colorOptions={colorOptions}
+              />
+            </Dialog>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {domains.map((domain) => (
+              <Card key={domain.id}>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-blue-600" />
+                      {domain.title}
+                    </span>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => { setEditingDomain(domain); setIsDomainDialogOpen(true); }}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => handleDeleteDomain(domain.id)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 mb-2">{domain.description}</p>
+                  <div className="flex gap-2 flex-wrap">
+                    <Badge variant="outline">Icône: {domain.icon}</Badge>
+                    <Badge variant="outline">Couleur: {domain.color}</Badge>
+                    <Badge variant="outline">Ordre: {domain.order_index}</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </TabsContent>
 
         <TabsContent value="values" className="space-y-6">
@@ -805,6 +917,112 @@ const AchievementDialog: React.FC<AchievementDialogProps> = ({ achievement, onSa
             onChange={(e) => setFormData({...formData, items: e.target.value})}
             placeholder="Élément 1&#10;Élément 2&#10;Élément 3"
             required
+          />
+        </div>
+        <Button type="submit" className="w-full">
+          <Save className="w-4 h-4 mr-2" />
+          Sauvegarder
+        </Button>
+      </form>
+    </DialogContent>
+  );
+};
+
+interface DomainDialogProps {
+  domain: AboutDomain | null;
+  onSave: (domain: Omit<AboutDomain, 'id' | 'created_at' | 'updated_at'>) => void;
+  colorOptions: string[];
+}
+
+const domainIconOptions = [
+  'Briefcase', 'Scale', 'Sprout', 'GraduationCap', 'HeartPulse', 'Building2',
+  'Globe', 'Zap', 'Target', 'Handshake', 'Shield', 'Heart', 'Star', 'Users',
+  'TrendingUp', 'BookOpen', 'Award', 'Lightbulb',
+];
+
+const DomainDialog: React.FC<DomainDialogProps> = ({ domain, onSave, colorOptions }) => {
+  const [formData, setFormData] = useState({
+    title: domain?.title || '',
+    description: domain?.description || '',
+    icon: domain?.icon || 'Briefcase',
+    color: domain?.color || colorOptions[0],
+    order_index: domain?.order_index || 0,
+  });
+
+  useEffect(() => {
+    setFormData({
+      title: domain?.title || '',
+      description: domain?.description || '',
+      icon: domain?.icon || 'Briefcase',
+      color: domain?.color || colorOptions[0],
+      order_index: domain?.order_index || 0,
+    });
+  }, [domain]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+    if (!domain) {
+      setFormData({ title: '', description: '', icon: 'Briefcase', color: colorOptions[0], order_index: 0 });
+    }
+  };
+
+  return (
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{domain ? 'Modifier le domaine' : 'Ajouter un domaine d\'intervention'}</DialogTitle>
+      </DialogHeader>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="d_title">Titre</Label>
+          <Input
+            id="d_title"
+            value={formData.title}
+            onChange={(e) => setFormData({...formData, title: e.target.value})}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="d_description">Description</Label>
+          <Textarea
+            id="d_description"
+            rows={3}
+            value={formData.description}
+            onChange={(e) => setFormData({...formData, description: e.target.value})}
+            required
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Icône</Label>
+            <Select value={formData.icon} onValueChange={(v) => setFormData({...formData, icon: v})}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {domainIconOptions.map((icon) => (
+                  <SelectItem key={icon} value={icon}>{icon}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Couleur</Label>
+            <Select value={formData.color} onValueChange={(v) => setFormData({...formData, color: v})}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {colorOptions.map((color) => (
+                  <SelectItem key={color} value={color}>{color}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="d_order">Ordre d'affichage</Label>
+          <Input
+            id="d_order"
+            type="number"
+            value={formData.order_index}
+            onChange={(e) => setFormData({...formData, order_index: parseInt(e.target.value) || 0})}
           />
         </div>
         <Button type="submit" className="w-full">

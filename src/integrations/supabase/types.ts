@@ -44,6 +44,39 @@ export type Database = {
         }
         Relationships: []
       }
+      about_domains: {
+        Row: {
+          color: string
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          order_index: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          order_index?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          order_index?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       about_page: {
         Row: {
           achievements_subtitle: string
