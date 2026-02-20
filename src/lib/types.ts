@@ -121,6 +121,7 @@ export interface DocumentType {
   title: string;
   description: string;
   link: string;
+  created_at?: string;
 }
 
 export interface MediaItemType {
