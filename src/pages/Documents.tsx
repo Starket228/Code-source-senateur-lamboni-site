@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Layout from '@/components/Layout';
 import { useSite } from '@/context/SiteContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -33,47 +33,64 @@ const Documents = () => {
   doc.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const categories = [
-  {
-    id: 'reports',
-    name: 'Rapports',
-    icon: FileText,
-    count: 12,
-    color: 'from-blue-500 to-blue-600',
-    bgColor: 'bg-blue-50'
-  },
-  {
-    id: 'laws',
-    name: 'Projets de Loi',
-    icon: FilePlus2,
-    count: 8,
-    color: 'from-green-500 to-green-600',
-    bgColor: 'bg-green-50'
-  },
-  {
-    id: 'press',
-    name: 'Communiqués',
-    icon: File,
-    count: 15,
-    color: 'from-yellow-500 to-yellow-600',
-    bgColor: 'bg-yellow-50'
-  },
-  {
-    id: 'studies',
-    name: 'Études',
-    icon: FileSpreadsheet,
-    count: 5,
-    color: 'from-purple-500 to-purple-600',
-    bgColor: 'bg-purple-50'
-  },
-  {
-    id: 'media',
-    name: 'Médias',
-    icon: FileImage,
-    count: 20,
-    color: 'from-pink-500 to-pink-600',
-    bgColor: 'bg-pink-50'
-  }];
+  // Build categories dynamically from actual documents
+  const categories = useMemo(() => {
+    const iconMap: Record<string, any> = {
+      'rapports': FileText,
+      'lois': FilePlus2,
+      'communiqués': File,
+      'études': FileSpreadsheet,
+      'médias': FileImage,
+    };
+    const colorMap: Record<string, { gradient: string; bg: string }> = {
+      'rapports': { gradient: 'from-blue-500 to-blue-600', bg: 'bg-blue-50' },
+      'lois': { gradient: 'from-green-500 to-green-600', bg: 'bg-green-50' },
+      'communiqués': { gradient: 'from-yellow-500 to-yellow-600', bg: 'bg-yellow-50' },
+      'études': { gradient: 'from-purple-500 to-purple-600', bg: 'bg-purple-50' },
+      'médias': { gradient: 'from-pink-500 to-pink-600', bg: 'bg-pink-50' },
+    };
+    const defaultColors = [
+      { gradient: 'from-blue-500 to-blue-600', bg: 'bg-blue-50' },
+      { gradient: 'from-green-500 to-green-600', bg: 'bg-green-50' },
+      { gradient: 'from-yellow-500 to-yellow-600', bg: 'bg-yellow-50' },
+      { gradient: 'from-purple-500 to-purple-600', bg: 'bg-purple-50' },
+      { gradient: 'from-pink-500 to-pink-600', bg: 'bg-pink-50' },
+    ];
+
+    // Count documents per category (using a simple grouping on the first word or type)
+    const catCounts = new Map<string, number>();
+    documents.forEach(doc => {
+      // Use category field if available, fallback to "Général"
+      const cat = (doc as any).category || 'Général';
+      catCounts.set(cat, (catCounts.get(cat) || 0) + 1);
+    });
+
+    // If no categories found, show a single "Tous les documents" category
+    if (catCounts.size === 0) {
+      return [{
+        id: 'all',
+        name: 'Tous les documents',
+        icon: FileText,
+        count: 0,
+        color: defaultColors[0].gradient,
+        bgColor: defaultColors[0].bg,
+      }];
+    }
+
+    let colorIdx = 0;
+    return Array.from(catCounts.entries()).map(([name, count]) => {
+      const key = name.toLowerCase();
+      const colors = colorMap[key] || defaultColors[colorIdx++ % defaultColors.length];
+      return {
+        id: key,
+        name,
+        icon: iconMap[key] || FileText,
+        count,
+        color: colors.gradient,
+        bgColor: colors.bg,
+      };
+    });
+  }, [documents]);
 
 
   const handleDownload = (link: string, title: string) => {
