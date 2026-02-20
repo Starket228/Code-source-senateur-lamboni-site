@@ -20,8 +20,10 @@ export class StorageService {
     path?: string
   ): Promise<UploadResult> {
     try {
-      // Générer un nom de fichier unique si aucun chemin n'est fourni
-      const fileName = path || `${Date.now()}-${Math.random().toString(36).substring(2)}-${file.name}`;
+      // Sanitize filename: remove accents, special chars, spaces
+      const sanitize = (name: string) =>
+        name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9._-]/g, '-');
+      const fileName = path || `${Date.now()}-${Math.random().toString(36).substring(2)}-${sanitize(file.name)}`;
       
       console.log(`StorageService: Uploading file ${fileName} to bucket ${bucket}`);
       
