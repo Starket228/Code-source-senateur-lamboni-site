@@ -208,7 +208,14 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         handleSupabaseError(documentsResult.error, 'la récupération des documents');
       } else {
         console.log('SiteContext: Documents data updated:', documentsResult.data?.length || 0, 'items');
-        setDocuments(documentsResult.data || []);
+        const mappedDocuments = (documentsResult.data || []).map(item => ({
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          link: item.link,
+          created_at: item.created_at || undefined,
+        }));
+        setDocuments(mappedDocuments);
       }
 
       if (mediaResult.error) {

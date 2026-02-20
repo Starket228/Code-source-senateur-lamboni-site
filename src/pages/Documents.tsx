@@ -3,6 +3,7 @@ import Layout from '@/components/Layout';
 import { useSite } from '@/context/SiteContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { FileText, Download, Search, Clock, FilePlus2, File, FileSpreadsheet, FileImage, Filter, Tag, ArrowDown, Eye, Star, TrendingUp, Archive, Calendar, ExternalLink, AlertTriangle } from 'lucide-react';
+import { formatDateForUI } from '@/utils/dateUtils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
@@ -256,7 +257,7 @@ const Documents = () => {
                       
                       <div className="flex items-center text-gray-500 mb-4">
                         <Calendar size={14} className="mr-2" />
-                        <span className="text-sm">15 Juin 2024</span>
+                        <span className="text-sm">{formatDateForUI(document.created_at || null)}</span>
                         <div className="ml-auto">
                           {hasValidLink ?
                       <Star size={14} className="text-green-500" /> :
@@ -300,7 +301,7 @@ const Documents = () => {
                     </div>
                     <div className="flex items-center text-gray-500 mr-6 flex-shrink-0">
                       <Calendar size={14} className="mr-2" />
-                      <span className="text-sm whitespace-nowrap">15 Juin 2024</span>
+                      <span className="text-sm whitespace-nowrap">{formatDateForUI(document.created_at || null)}</span>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       {hasValidLink ?
