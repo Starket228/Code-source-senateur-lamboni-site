@@ -148,8 +148,14 @@ const NewsDetail = () => {
 
     const title       = getLocalizedField(news, 'title');
     const description = getLocalizedField(news, 'description');
-    const image       = news.image;
     const url         = window.location.href;
+
+    // S'assure que l'image est une URL absolue (les scrapers sociaux
+    // ne savent pas résoudre les chemins relatifs)
+    const rawImage = news.image ?? '';
+    const image    = rawImage.startsWith('http')
+      ? rawImage
+      : `${window.location.origin}${rawImage.startsWith('/') ? '' : '/'}${rawImage}`;
 
     injectSocialMeta(title, description, image, url);
 
