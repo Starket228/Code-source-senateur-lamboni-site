@@ -39,10 +39,22 @@ import {
 } from 'lucide-react';
 import { MediaType } from '@/lib/types';
 import { CrudService } from '@/utils/crudUtils';
+import { CategoryService } from '@/utils/categoryUtils';
 
 const AdminMedia = () => {
   const navigate = useNavigate();
   const { mediaItems, isLoading, refreshData } = useSite();
+  const [mediaCategories, setMediaCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      const result = await CategoryService.getCategories('media');
+      if (result.success && result.data) {
+        setMediaCategories(result.data);
+      }
+    };
+    loadCategories();
+  }, []);
   
   // État pour la gestion des médias
   const [dialogOpen, setDialogOpen] = useState(false);

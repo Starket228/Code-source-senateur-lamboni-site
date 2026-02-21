@@ -5,7 +5,7 @@ export interface Category {
   id: string;
   name: string;
   description?: string;
-  type: 'news' | 'programs' | 'documents';
+  type: 'news' | 'programs' | 'documents' | 'media';
   count?: number;
   created_at?: string;
   updated_at?: string;
@@ -18,7 +18,7 @@ export interface CrudOperationResult<T = any> {
 }
 
 export class CategoryService {
-  static async getCategories(type: 'news' | 'programs' | 'documents'): Promise<CrudOperationResult<Category[]>> {
+  static async getCategories(type: 'news' | 'programs' | 'documents' | 'media'): Promise<CrudOperationResult<Category[]>> {
     try {
       console.log(`CategoryService: Fetching categories for type ${type}`);
       
@@ -58,6 +58,12 @@ export class CategoryService {
               .select('*', { count: 'exact', head: true })
               .eq('category', category.name);
             count = itemCount || 0;
+          } else if (type === 'media') {
+            const { count: itemCount } = await supabase
+              .from('media')
+              .select('*', { count: 'exact', head: true })
+              .eq('category', category.name);
+            count = itemCount || 0;
           }
         } catch (error) {
           console.warn(`Error getting count for category ${category.name}:`, error);
@@ -67,7 +73,7 @@ export class CategoryService {
           id: category.id,
           name: category.name,
           description: category.description,
-          type: category.type as 'news' | 'programs' | 'documents',
+          type: category.type as 'news' | 'programs' | 'documents' | 'media',
           count,
           created_at: category.created_at,
           updated_at: category.updated_at
@@ -85,7 +91,7 @@ export class CategoryService {
   static async createCategory(data: { 
     name: string; 
     description?: string; 
-    type: 'news' | 'programs' | 'documents' 
+    type: 'news' | 'programs' | 'documents' | 'media' 
   }): Promise<CrudOperationResult<Category>> {
     try {
       console.log(`CategoryService: Creating category:`, data);
@@ -113,7 +119,7 @@ export class CategoryService {
           id: result.id,
           name: result.name,
           description: result.description,
-          type: result.type as 'news' | 'programs' | 'documents',
+          type: result.type as 'news' | 'programs' | 'documents' | 'media',
           created_at: result.created_at,
           updated_at: result.updated_at
         } as Category
@@ -155,7 +161,7 @@ export class CategoryService {
           id: result.id,
           name: result.name,
           description: result.description,
-          type: result.type as 'news' | 'programs' | 'documents',
+          type: result.type as 'news' | 'programs' | 'documents' | 'media',
           created_at: result.created_at,
           updated_at: result.updated_at
         } as Category
@@ -190,7 +196,7 @@ export class CategoryService {
           id: result.id,
           name: result.name,
           description: result.description,
-          type: result.type as 'news' | 'programs' | 'documents',
+          type: result.type as 'news' | 'programs' | 'documents' | 'media',
           created_at: result.created_at,
           updated_at: result.updated_at
         } as Category
@@ -201,7 +207,7 @@ export class CategoryService {
     }
   }
 
-  static async getCategoryOptions(type: 'news' | 'programs' | 'documents'): Promise<string[]> {
+  static async getCategoryOptions(type: 'news' | 'programs' | 'documents' | 'media'): Promise<string[]> {
     try {
       const result = await this.getCategories(type);
       if (result.success && result.data) {
