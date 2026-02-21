@@ -6,6 +6,8 @@ import { ChevronRight, Search, Tag, Clock, User, ArrowRight, ChevronLeft, Calend
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { CategoryService } from '@/utils/categoryUtils';
+
 const News = () => {
   const {
     newsCards,
@@ -19,14 +21,33 @@ const News = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
   const [isHoveredIndex, setIsHoveredIndex] = useState<number | null>(null);
+  const [categories, setCategories] = useState<string[]>(['all']);
 
-  // Get unique categories
-  const categories = ['all', ...Array.from(new Set(newsCards.map(card => card.tag.toLowerCase())))];
+  // Load categories from CategoryManager
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const result = await CategoryService.getCategories('news');
+        if (result.success && result.data && result.data.length > 0) {
+          setCategories(['all', ...result.data.map((cat: any) => cat.name)]);
+        } else {
+          // Fallback: generate from existing tags if no categories defined
+          setCategories(['all', ...Array.from(new Set(newsCards.map(card => card.tag)))]);
+        }
+      } catch (error) {
+        console.error('Error loading categories:', error);
+        // Fallback on error
+        setCategories(['all', ...Array.from(new Set(newsCards.map(card => card.tag)))]);
+      }
+    };
+
+    loadCategories();
+  }, [newsCards]);
 
   // Filter news cards based on search term and category
   const filteredNews = newsCards.filter(card => {
     const matchesSearch = card.title.toLowerCase().includes(searchTerm.toLowerCase()) || card.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || card.tag.toLowerCase() === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || card.tag.toLowerCase() === selectedCategory.toLowerCase();
     return matchesSearch && matchesCategory;
   });
 
@@ -34,7 +55,7 @@ const News = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentFeaturedIndex(prevIndex => prevIndex === newsCards.length - 1 ? 0 : prevIndex + 1);
-    }, 5000); // Change slide every 5 seconds
+    }, 5000);
 
     return () => clearInterval(intervalId);
   }, [newsCards.length]);
@@ -62,8 +83,6 @@ const News = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            
-            
             <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-6 leading-tight">
               {t('news.title')}
             </h1>
@@ -252,8 +271,6 @@ const News = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center text-white">
-            
-            
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               {t('news.stayInformed')}
             </h2>
