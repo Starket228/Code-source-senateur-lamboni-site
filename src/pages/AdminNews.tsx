@@ -97,6 +97,7 @@ const AdminNews = () => {
     });
     if (result.success) {
       await loadCategories();
+      await refreshData();
     }
   };
 
@@ -104,6 +105,7 @@ const AdminNews = () => {
     const result = await CategoryService.updateCategory(id, data);
     if (result.success) {
       await loadCategories();
+      await refreshData();
     }
   };
 
@@ -111,6 +113,7 @@ const AdminNews = () => {
     const result = await CategoryService.deleteCategory(id);
     if (result.success) {
       await loadCategories();
+      await refreshData();
     }
   };
 
@@ -396,7 +399,6 @@ const AdminNews = () => {
           title="Catégories des actualités"
         />
 
-        
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className={`${isMobile ? 'max-w-[95vw] max-h-[90vh] h-[90vh]' : 'max-w-4xl max-h-[90vh]'} overflow-y-auto`}>
             <DialogHeader className="pb-4 sm:pb-6">
