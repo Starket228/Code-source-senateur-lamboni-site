@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSite } from '@/context/SiteContext';
@@ -433,8 +432,9 @@ const AdminMedia = () => {
 
       {/* Dialog pour ajouter/modifier */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
+        {/* ✅ CORRECTION : max-h-[90vh] + flex column pour que le footer reste visible */}
+        <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle>{isEditing ? 'Modifier le média' : 'Ajouter un média'}</DialogTitle>
             <DialogDescription>
               {isEditing 
@@ -443,7 +443,8 @@ const AdminMedia = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-4 py-4">
+          {/* ✅ CORRECTION : overflow-y-auto pour rendre la zone du formulaire scrollable */}
+          <div className="space-y-4 py-4 overflow-y-auto flex-1 pr-1">
             <div className="space-y-2">
               <label htmlFor="title" className="text-sm font-medium">
                 Titre *
@@ -531,7 +532,8 @@ const AdminMedia = () => {
             )}
           </div>
           
-          <DialogFooter>
+          {/* ✅ CORRECTION : flex-shrink-0 pour que le footer reste toujours visible en bas */}
+          <DialogFooter className="flex-shrink-0 border-t pt-4">
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               Annuler
             </Button>
