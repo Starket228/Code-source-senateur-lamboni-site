@@ -68,18 +68,21 @@ const AdminHero = () => {
       console.log('AdminHero: Saving hero data:', formData);
 
       // Préparer les données pour la base de données
-      const heroDataToSave = {
-        id: crypto.randomUUID(),
+      const heroDataToSave: any = {
         title: formData.title,
         description: formData.description,
         button_text: formData.buttonText,
         background_image: formData.backgroundImage,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
       };
 
-      // Utiliser CrudService pour sauvegarder
-      const result = await CrudService.upsert('hero_section', heroDataToSave);
+      let result;
+      // Check if hero already exists in DB
+      const existingCheck = await CrudService.read('hero_section');
+      if (existingCheck.success && existingCheck.data && existingCheck.data.length > 0) {
+        result = await CrudService.update('hero_section', (existingCheck.data[0] as any).id, heroDataToSave);
+      } else {
+        result = await CrudService.create('hero_section', heroDataToSave);
+      }
 
       if (result.success) {
         console.log('AdminHero: Hero saved successfully:', result.data);

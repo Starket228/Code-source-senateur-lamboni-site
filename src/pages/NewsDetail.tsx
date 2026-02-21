@@ -189,10 +189,32 @@ const NewsDetail = () => {
               </div>
 
               {/* Share Buttons */}
-              <div className="flex items-center space-x-4 mb-8">
+              <div className="flex items-center flex-wrap gap-2 mb-8">
                 <span className="text-gray-600 font-medium">{t('news.share')}:</span>
-                <Button size="sm" variant="outline" className="rounded-full">
-                  <Share2 size={16} />
+                <Button size="sm" variant="outline" className="rounded-full" onClick={() => {
+                  const url = encodeURIComponent(window.location.href);
+                  const text = encodeURIComponent(news.title);
+                  window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+                }}>
+                  WhatsApp
+                </Button>
+                <Button size="sm" variant="outline" className="rounded-full" onClick={() => {
+                  const url = encodeURIComponent(window.location.href);
+                  window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+                }}>
+                  Facebook
+                </Button>
+                <Button size="sm" variant="outline" className="rounded-full" onClick={() => {
+                  const url = encodeURIComponent(window.location.href);
+                  const text = encodeURIComponent(news.title);
+                  window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+                }}>
+                  X / Twitter
+                </Button>
+                <Button size="sm" variant="outline" className="rounded-full" onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                }}>
+                  <Share2 size={16} className="mr-1" /> Copier
                 </Button>
               </div>
 

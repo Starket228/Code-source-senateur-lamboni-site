@@ -213,6 +213,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
           title: item.title,
           description: item.description,
           link: item.link,
+          category: item.category || undefined,
           created_at: item.created_at || undefined,
         }));
         setDocuments(mappedDocuments);
@@ -324,9 +325,9 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Function to force data refresh - optimisée pour éviter les conflits
   const refreshData = useCallback(async () => {
-    console.log('SiteContext: Selective refresh requested');
-    // Ne plus faire de refresh automatique, laisser les composants gérer leur état localement
-  }, []);
+    console.log('SiteContext: Refresh requested, re-fetching data...');
+    await fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     fetchData();

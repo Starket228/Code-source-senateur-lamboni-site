@@ -60,8 +60,7 @@ const Documents = () => {
     // Count documents per category (using a simple grouping on the first word or type)
     const catCounts = new Map<string, number>();
     documents.forEach(doc => {
-      // Use category field if available, fallback to "Général"
-      const cat = (doc as any).category || 'Général';
+      const cat = doc.category || 'Général';
       catCounts.set(cat, (catCounts.get(cat) || 0) + 1);
     });
 

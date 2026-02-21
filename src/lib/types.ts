@@ -121,6 +121,7 @@ export interface DocumentType {
   title: string;
   description: string;
   link: string;
+  category?: string;
   created_at?: string;
 }
 

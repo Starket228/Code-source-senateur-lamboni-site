@@ -166,9 +166,20 @@ const AdminMessages = () => {
                             {message.email}
                           </div>
                           {message.phone && (
-                            <div className="flex items-center gap-1">
-                              <Phone className="w-4 h-4" />
-                              {message.phone}
+                            <div className="flex items-center gap-2">
+                              <a href={`tel:${message.phone}`} className="flex items-center gap-1 text-blue-600 hover:underline" title="Appeler">
+                                <Phone className="w-4 h-4" />
+                                {message.phone}
+                              </a>
+                              <a
+                                href={`https://wa.me/${message.phone.replace(/[^0-9+]/g, '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200 transition-colors"
+                                title="WhatsApp"
+                              >
+                                WhatsApp
+                              </a>
                             </div>
                           )}
                           <div className="flex items-center gap-1">
@@ -196,7 +207,11 @@ const AdminMessages = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => window.location.href = `mailto:${message.email}?subject=Re: ${message.subject}`}
+                        onClick={() => {
+                          const subject = encodeURIComponent(`Re: ${message.subject}`);
+                          const body = encodeURIComponent(`\n\n--- Message original ---\nDe: ${message.name}\nSujet: ${message.subject}\n\n${message.message}`);
+                          window.open(`mailto:${message.email}?subject=${subject}&body=${body}`, '_blank');
+                        }}
                         className="bg-green-50 hover:bg-green-100 border-green-200"
                       >
                         <Reply className="w-4 h-4 mr-1" />

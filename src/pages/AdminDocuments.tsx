@@ -428,20 +428,18 @@ const AdminDocuments = () => {
                   <label htmlFor="category" className="block text-sm font-medium text-gray-700">
                     Catégorie
                   </label>
-                  <Input 
-                    id="category" 
-                    name="category" 
-                    value={formData.category} 
-                    onChange={handleInputChange}
-                    className="w-full text-sm"
-                    placeholder="Ex: Formulaires, Rapports, etc."
-                    list="categories-list"
-                  />
-                  <datalist id="categories-list">
+                  <select
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    <option value="">-- Sélectionner une catégorie --</option>
                     {categories.map(category => (
-                      <option key={category.id} value={category.name} />
+                      <option key={category.id} value={category.name}>{category.name}</option>
                     ))}
-                  </datalist>
+                  </select>
                 </div>
 
                 <div className="space-y-2 sm:space-y-3">

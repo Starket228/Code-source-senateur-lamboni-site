@@ -55,7 +55,7 @@ const Hero: React.FC = () => {
         </div>
       </div>;
   }
-  const heroImage = "https://i.postimg.cc/26M71x5J/Whats-App-Image-2025-03-10-at-00-32-49.jpg";
+  const heroImage = hero.backgroundImage || "https://i.postimg.cc/26M71x5J/Whats-App-Image-2025-03-10-at-00-32-49.jpg";
   return <>
       {/* Flag stripe */}
       
